@@ -59,3 +59,53 @@ body {
     background-color 0.3s,
     color 0.3s;
 }
+
+@theme inline {
+  --animate-marquee: marque 30s linear infinite;
+}
+
+/* ============================================================
+   Animation tokens. Same prefix system as colours:
+   --animate-* generates the `animate-*` utility class.
+   So --animate-marquee makes `animate-marquee` work.
+   ============================================================ */
+
+@keyframes marquee {
+  /* 'from' defaults to the elements current position */
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* ============================================================
+   The halftone grain layer.
+   ============================================================ */
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  /* tiny dot tiled every 4px */
+  background-image: radial-gradient(
+    circle,
+    var(--grain-dot) 0.8px,
+    transparent 0.8px
+  );
+  background-size: 4px 4px;
+  opacity: var(--grain-opacity);
+}
+
+/* ============================================================
+   Respect the OS "reduce motion" setting.
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

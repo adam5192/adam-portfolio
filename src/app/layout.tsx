@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Syne, Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+import { ThemeScript } from "@/components/ThemeScript";
 
 const syne = Syne({
   subsets: ["latin"],
@@ -38,6 +39,9 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${syne.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable}`}
     >
+      <head>
+        <ThemeScript />
+      </head>
       <body>{children}</body>
     </html>
   );
