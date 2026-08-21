@@ -109,3 +109,61 @@ body::before {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ============================================================
+   MISREGISTERED INK
+   ============================================================
+   Technique: each word gets TWO pseudo-elements that duplicate
+   its text, one pink and one blue, offset in opposite
+   directions and sitting BEHIND the real black text. (CSS generated content is invisible to screen readers and search engines, so its better than 3 spans.
+   ============================================================ */
+
+.ink-offset {
+  position: relative; /* the pseudo elements position against this */
+  display: inline-block; /* inline can't be a positioning reference reliably */
+
+  /* CRITICAL LINE.
+     The pseudo elements below use z-index: -1 to sit behind the
+     text.*/
+  isolation: isolate;
+}
+
+.ink-offset::before,
+.ink-offset::after {
+  /* attr() reads an HTML attribute and uses it as generated content.
+     So <span data-ink=" ..."> makes both layers duplicate
+     that string. This is why the text has to be in an attribute as well as in the element - the two must be kept in sync. */
+  content: attr(data-ink);
+
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: -1; /* behind the real text, inside the isolated context */
+  pointer-events: none; /* not selectable, not clickable */
+  transition: transform 0.55s cubic-bezier(0.34, 1.4, 0.5, 1);
+}
+
+/* Pink plate: shifted down and right */
+.ink-offset::before {
+  color: var(--color-pink-raw);
+  transform: translate(4px, 3px);
+}
+
+/* Blue plate: shifted up and left, so the two pull apart */
+.ink-offset::after {
+  color: var(--color-blue-raw);
+  transform: translate(-3px, -3px);
+}
+
+/* On hover, exaggerate the misalignment.*/
+.group\/hero:hover .ink-offset::before {
+  transform: translate(11px, 8px);
+}
+
+.group\/hero:hover .ink-offset::after {
+  transform: translate(-9px, -7px);
+}
+
+html {
+  scroll-behavior: smooth;
+}

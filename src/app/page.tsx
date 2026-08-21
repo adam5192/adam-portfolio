@@ -1,5 +1,7 @@
 import { SiteHeader } from "@/components/SiteHeader";
 import { Marquee } from "@/components/Marquee";
+import { Hero } from "@/components/Hero";
+import { SectionHead } from "@/components/SectionHead";
 
 export default function Home() {
   return (
@@ -8,16 +10,20 @@ export default function Home() {
         <SiteHeader />
         <Marquee />
 
-        <div className="mt-10">
-          <h1 className="font-display text-6xl font-extrabold tracking-tight uppercase">
-            Lorem ipsum.
-          </h1>
-          <p className="text-body mt-4 max-w-md leading-relaxed">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad minim veniam
-          </p>
+        <div className="mt-[38px]">
+          <Hero />
         </div>
+
+        {/* The id is what the header's #work link scrolls to */}
+        <section id="work">
+          <SectionHead
+            title="Selected work"
+            meta="05 shipped · 01 in progress"
+          />
+          <p className="text-faint font-mono text-sm">
+            Project grid goes here next.
+          </p>
+        </section>
       </main>
     </div>
   );
