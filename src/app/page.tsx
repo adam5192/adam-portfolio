@@ -2,6 +2,7 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { Marquee } from "@/components/Marquee";
 import { Hero } from "@/components/Hero";
 import { SectionHead } from "@/components/SectionHead";
+import { WORK_META } from "@/lib/projects";
 
 export default function Home() {
   return (
@@ -10,16 +11,13 @@ export default function Home() {
         <SiteHeader />
         <Marquee />
 
-        <div className="mt-[38px]">
+        <div className="mt-9.5">
           <Hero />
         </div>
 
         {/* The id is what the header's #work link scrolls to */}
         <section id="work">
-          <SectionHead
-            title="Selected work"
-            meta="05 shipped · 01 in progress"
-          />
+          <SectionHead title="Selected work" meta={WORK_META} />
           <p className="text-faint font-mono text-sm">
             Project grid goes here next.
           </p>
