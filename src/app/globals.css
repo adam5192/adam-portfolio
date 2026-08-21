@@ -167,3 +167,99 @@ body::before {
 html {
   scroll-behavior: smooth;
 }
+
+/* ============================================================
+   duotone plates
+   ============================================================
+   the trick: strip the screenshot to greyscale, then let it
+   blend into a solid ink background. multiply on light paper,
+   screen on dark.
+   ============================================================ */
+
+.plate {
+  position: relative;
+  overflow: hidden;
+  background-color: var(--plate-bg);
+
+  /* same isolate trick as the ink offset. mix-blend-mode blends
+     against everything behind it in the current stacking context -
+     without this the image would blend with the page background
+     and the card border instead of just its own ink layer */
+  isolation: isolate;
+}
+
+.plate img {
+  width: 100%;
+  height: 100%;
+
+  /* fills the box without squashing. object-position: top means
+     we crop from the bottom, since screenshots put the good stuff
+     up top */
+  object-fit: cover;
+  object-position: top center;
+
+
+  filter: var(--plate-filter); /* greyscale + contrast, themed */
+  mix-blend-mode: var(--plate-blend); /* multiply light / screen dark */
+
+  transition: transform 0.55s cubic-bezier(0.2, 0.9, 0.3, 1);
+}
+
+/* halftone over the image only. this one IS on top - no text
+   underneath it, and it's what sells the "printed" look */
+.plate::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background-image: radial-gradient(
+    circle,
+    rgba(0, 0, 0, 0.9) 0.7px,
+    transparent 0.7px
+  );
+  background-size: 3px 3px;
+  opacity: var(--plate-dot-opacity);
+  mix-blend-mode: multiply;
+}
+
+.plate--gen {
+  background-color: var(--color-blue-raw);
+}
+
+/* two gradients stacked: diagonal stripes over a big off-centre
+   dot. comma-separated backgrounds layer first-on-top */
+.plate--gen::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    repeating-linear-gradient(
+      45deg,
+      var(--color-pink-raw) 0 11px,
+      transparent 11px 22px
+    ),
+    radial-gradient(
+      circle at 72% 28%,
+      var(--color-pink-raw) 0 30%,
+      transparent 30%
+    );
+  opacity: 0.9;
+}
+
+.plate__label {
+  position: absolute;
+  inset: 0;
+  z-index: 3; /* above the pattern AND the halftone */
+  display: grid;
+  place-items: center; /* centres both axes in one line */
+  padding: 12px;
+  font-family: var(--font-syne);
+  font-weight: 800;
+  font-size: clamp(20px, 3vw, 34px);
+  letter-spacing: -0.02em;
+  line-height: 1.02;
+  text-align: center;
+  color: var(--color-onink-raw);
+}
