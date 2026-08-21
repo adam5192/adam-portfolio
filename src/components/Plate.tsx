@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 import type { Project } from "@/lib/projects";
 
 type PlateProps = {
@@ -7,7 +6,7 @@ type PlateProps = {
 };
 
 export function Plate({ project, className = "" }: PlateProps) {
-  // no screenshot yet -> generated pattern instead of a broken image
+  // no screenshot yet so draw a pattern instead of a broken image
   if (!project.image) {
     return (
       <div className={`plate plate--gen ${className}`}>
@@ -18,7 +17,8 @@ export function Plate({ project, className = "" }: PlateProps) {
 
   return (
     <div className={`plate ${className}`}>
-      {/* plain <img>, not next/image - see note below */}
+      {/* plain img not next/image because next wraps it in its own span
+          with inline styles which fights the plate layering */}
       <img
         src={project.image}
         alt={`${project.title} screenshot`}

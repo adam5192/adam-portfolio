@@ -1,34 +1,28 @@
 export type Project = {
-  // slug is a url-safe id
   slug: string;
-
   title: string;
-
+  // union type, only these two strings are allowed
   kind: "Web app" | "Game";
-
   year: string;
-
   featured?: boolean;
   wip?: boolean;
-
-  // Card copy
+  // short version for the card
   summary: string;
-
-  // Modal copy: full-story
+  // full version for the modal
   description: string;
-
   role: string;
-
   tags: readonly string[];
-
+  // null forces you to check before rendering a link
   live: string | null;
-
   repo: string;
-
   image: string | null;
   video: string | null;
 };
 
+// the annotation widens every entry to Project so optional keys like wip
+// are readable on all of them
+// dont use `as const satisfies` here, it keeps the literals but then wip
+// doesnt exist on the objects that dont declare it
 export const PROJECTS: readonly Project[] = [
   {
     slug: "playloggd",
@@ -37,10 +31,10 @@ export const PROJECTS: readonly Project[] = [
     year: "2026",
     featured: true,
     summary:
-      "Track your backlog, import your entire Steam library in one go, and get an AI recommendation for what to play next — with reasoning tied to what you've actually rated.",
+      "Track your backlog, import your entire Steam library in one go, and get an AI recommendation for what to play next, with reasoning tied to what you've actually rated.",
     description:
-      "Track your game backlog, import your entire Steam library in one go, and get an AI recommendation for what to play next based on what you've actually rated. Steam and IGDB don't agree on how games are named, so I built a layered matcher — exact, then cleaned, then fuzzy ranked by popularity — with a review screen so you confirm matches before anything is imported. Row-level security is enforced at the database, and every external call degrades gracefully rather than crashing when a service is slow.",
-    role: "Solo | design, front end, back end, schema, AI integration.",
+      "Track your game backlog, import your entire Steam library in one go, and get an AI recommendation for what to play next based on what you've actually rated. Steam and IGDB don't agree on how games are named, so I built a layered matcher: exact, then cleaned, then fuzzy ranked by popularity, with a review screen so you confirm matches before anything is imported. Row-level security is enforced at the database, and every external call degrades gracefully rather than crashing when a service is slow.",
+    role: "Solo - design, front end, back end, schema, AI integration.",
     tags: [
       "Next.js 15",
       "TypeScript",
@@ -53,8 +47,9 @@ export const PROJECTS: readonly Project[] = [
     ],
     live: "https://playloggd.adammokdad.com",
     repo: "https://github.com/adam5192/game-backlog-tracker",
-    image: null, // TODO: screenshot the stats page + Steam import review
-    video: null,
+    // todo screenshot the stats page and the steam import review screen
+    image: "/images/playloggd.png",
+    video: "/videos/playloggd.mp4",
   },
   {
     slug: "deepseeker",
@@ -66,7 +61,7 @@ export const PROJECTS: readonly Project[] = [
       "A 2D survival crafting game with diving and mining mechanics, built in Unity. I handled core gameplay, UI design, and animation integration.",
     description:
       "A 2D survival crafting game with diving and mining mechanics, built in Unity as a group project. I handled core gameplay functionality, UI design, and implementing the animations.",
-    role: "Team of four | core gameplay, UI design, animation integration.",
+    role: "Team of four - core gameplay, UI design, animation integration.",
     tags: ["Unity", "C#", "2D", "UI Design", "Group Project"],
     live: "https://nessyu.itch.io/deepseeker",
     repo: "https://github.com/MatthewBoden/DATT-2310-DeepSeeker",
@@ -82,7 +77,7 @@ export const PROJECTS: readonly Project[] = [
       "Plan trips, log activities with ratings and categories, and watch it all land as pins on an interactive map.",
     description:
       "A trip planning and tracking app for organizing your travels. Create trips, log your favourite activities with ratings and categories, and see everything come together as pins on an interactive map.",
-    role: "Solo | full stack.",
+    role: "Solo - full stack.",
     tags: ["JavaScript", "Vite", "Supabase", "Leaflet", "Solo Dev"],
     live: "https://tripdrop.adammokdad.com",
     repo: "https://github.com/adam5192/tripdrop",
@@ -97,9 +92,9 @@ export const PROJECTS: readonly Project[] = [
     summary:
       "Full-stack note taking with real-time sync and authentication, built across the whole stack.",
     description:
-      "A full-stack note-taking web app with real-time sync and authentication. Built across the entire stack — MongoDB and Firebase on the back end, clean responsive UI on the front.",
-    role: "Solo | full stack.",
-    tags: ["Next.js", "React", "Firebase", "MongoDB", "JavaScript", "HTML/CSS"],
+      "A full-stack note-taking web app with real-time sync and authentication. Built across the entire stack. MongoDB and Firebase on the back end, clean responsive UI on the front.",
+    role: "Solo - full stack.",
+    tags: ["Next.js", "Javascript", "Firebase", "MongoDB", "HTML/CSS"],
     live: "https://adam5192.github.io/Note-Taking-App/",
     repo: "https://github.com/adam5192/Note-Taking-App",
     image: "/images/notely.png",
@@ -114,7 +109,7 @@ export const PROJECTS: readonly Project[] = [
       "A Unity game designed, programmed, and shipped entirely solo, from core mechanics to final build.",
     description:
       "A solo-developed Unity game: designed, programmed, and shipped entirely independently, from core mechanics to final build.",
-    role: "Solo | design, programming, build.",
+    role: "Solo - design, programming, build.",
     tags: ["Unity", "C#", "Solo Dev", "Game Design", "UI Design"],
     live: "https://adam5192.itch.io/spellstorm-academy",
     repo: "https://github.com/adam5192/SpellstormAcademy",
@@ -131,7 +126,7 @@ export const PROJECTS: readonly Project[] = [
       "Search nearby events by keyword, city, date range and distance, on an interactive map.",
     description:
       "Full-stack event discovery app. Search nearby events by keyword, city, date range, and distance. Features an interactive map with markers, debounced search, paginated results, direct ticket links, and race condition handling via AbortController.",
-    role: "Solo | full stack.",
+    role: "Solo - full stack.",
     tags: [
       "Next.js",
       "React",
@@ -139,18 +134,16 @@ export const PROJECTS: readonly Project[] = [
       "Ticketmaster API",
       "Google Maps API",
     ],
-    live: null, // no deploy yet
+    live: null,
     repo: "https://github.com/adam5192/eventhub",
     image: "/images/event.png",
     video: "/videos/event.mp4",
   },
 ];
 
+// computed so the count updates itself when you add a project
 export const WORK_META = (() => {
   const shipped = PROJECTS.filter((p) => !p.wip).length;
   const inProgress = PROJECTS.length - shipped;
-
-  return `${String(shipped).padStart(2, "0")} shipped · ${String(
-    inProgress,
-  ).padStart(2, "0")} in progress`;
+  return `${String(shipped).padStart(2, "0")} shipped · ${String(inProgress).padStart(2, "0")} in progress`;
 })();

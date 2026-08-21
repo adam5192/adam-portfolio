@@ -9,18 +9,20 @@ const ITEMS = [
 
 export function Marquee() {
   return (
-    <div className="border-ink overflow-hidden border-t-2 border-b-2 py-1.75 whitespace-nowrap">
+    <div className="border-line overflow-hidden border-t border-b py-[7px] whitespace-nowrap">
+      {/* the list renders twice on purpose
+          animating to -50% lands copy two exactly where copy one started
+          so the loop restart is invisible */}
       <div className="animate-marquee inline-block">
-        {/* duplication : render the list twice, animate translateX to -50%. The loop restart is invisible bc second copy sits where the first started */}
         {[0, 1].map((copy) => (
           <span key={copy}>
             {ITEMS.map((item) => (
               <span key={item}>
-                <span className="font-display mx-3.75 text-[12.5px] font-bold tracking-widest uppercase">
+                <span className="font-display mx-[15px] text-[12.5px] font-bold tracking-[0.1em] uppercase">
                   {item}
                 </span>
                 <span aria-hidden="true" className="text-pink">
-                  *
+                  ✳
                 </span>
               </span>
             ))}

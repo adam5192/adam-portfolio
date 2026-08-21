@@ -1,8 +1,13 @@
 @import "tailwindcss";
 
+/* tailwind v4 config lives here now, no tailwind.config.js
+   the `inline` keyword matters - without it tailwind bakes the hex in at
+   build time and runtime theming breaks */
 @theme inline {
   --color-paper: var(--color-paper-raw);
+  --color-surface: var(--color-surface-raw);
   --color-ink: var(--color-ink-raw);
+  --color-line: var(--color-line-raw);
   --color-body: var(--color-body-raw);
   --color-faint: var(--color-faint-raw);
   --color-pink: var(--color-pink-raw);
@@ -12,42 +17,53 @@
   --font-display: var(--font-syne);
   --font-body: var(--font-space);
   --font-mono: var(--font-jetbrains);
+
+  --animate-marquee: marquee 34s linear infinite;
+  --animate-modal-pop: modal-pop 0.3s cubic-bezier(0.2, 0.95, 0.3, 1);
+  --animate-fade: fade 0.22s ease;
 }
 
 :root {
-  /* --- light theme values --- */
-  --color-paper-raw: #eae7dc; /* warm off-white "paper" */
-  --color-ink-raw: #141417; /* near-black, all display type */
-  --color-body-raw: #33332f; /* body copy - darkened for contrast */
-  --color-faint-raw: #5e5e58; /* mono captions, metadata */
-  --color-pink-raw: #ff2d80; /* fluorescent ink 1 */
-  --color-blue-raw: #1d31cf; /* fluorescent ink 2 */
-  --color-onink-raw: #eae7dc; /* text sitting ON a pink/blue fill */
+  --color-paper-raw: #eae7dc;
+  --color-surface-raw: #f2f0e8;
+  --color-ink-raw: #141417;
+  --color-line-raw: #141417;
+  --color-body-raw: #33332f;
+  --color-faint-raw: #5e5e58;
+  --color-pink-raw: #ff2d80;
+  --color-blue-raw: #1d31cf;
+  --color-onink-raw: #faf8f2;
 
-  /* Non-colour tokens. These aren't in @theme because we use them directly in CSS rather than as Tailwind utilities. */
-  --grain-opacity: 0.16;
+  --grain-opacity: 0.15;
   --grain-dot: rgba(20, 20, 23, 0.85);
-  --plate-blend: multiply; /* how screenshots blend into the ink */
-  --plate-bg: var(--color-pink-raw);
-  --plate-filter: grayscale(1) contrast(1.3) brightness(1.14);
-  --plate-dot-opacity: 0.3;
+  --plate-bg: #ddd9cc;
+  --plate-filter: none;
+  --plate-dot-opacity: 0.1;
 }
 
+/* borders get their own token so dark mode can soften them without
+   dimming the text. text ink and border ink being the same value is
+   what made dark mode shout */
 [data-theme="dark"] {
-  --color-paper-raw: #121217;
-  --color-ink-raw: #f0ede3;
-  --color-body-raw: #c2bfb6;
-  --color-faint-raw: #8d8a84;
-  --color-pink-raw: #ff6bae; /* inks brightened so they read on dark */
-  --color-blue-raw: #7183ff;
-  --color-onink-raw: #121217;
+  --color-paper-raw: #17161b;
+  --color-surface-raw: #201f26;
+  --color-ink-raw: #ece8dd;
+  --color-line-raw: #3a3843;
+  --color-body-raw: #b0aca4;
+  --color-faint-raw: #7d7a74;
+  --color-pink-raw: #ff7ab5;
+  --color-blue-raw: #8d97ff;
+  --color-onink-raw: #17161b;
 
-  --grain-opacity: 0.1; /* grain is louder on dark, so dial it back */
-  --grain-dot: rgba(240, 237, 227, 0.8);
-  --plate-blend: screen; /* multiply turns to mud on dark - screen keeps ink glowing */
-  --plate-bg: #241f3d;
-  --plate-filter: grayscale(1) contrast(1.1) brightness(0.92);
-  --plate-dot-opacity: 0.18;
+  --grain-opacity: 0.07;
+  --grain-dot: rgba(236, 232, 221, 0.7);
+  --plate-bg: #262530;
+  --plate-filter: brightness(0.92) saturate(0.95);
+  --plate-dot-opacity: 0.06;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
@@ -55,107 +71,53 @@ body {
   color: var(--color-ink-raw);
   font-family: var(--font-space);
   -webkit-font-smoothing: antialiased;
-  transition:
-    background-color 0.3s,
-    color 0.3s;
+  transition: background-color 0.3s, color 0.3s;
 }
 
-@theme inline {
-  --animate-marquee: marque 30s linear infinite;
-}
-
-/* ============================================================
-   Animation tokens. Same prefix system as colours:
-   --animate-* generates the `animate-*` utility class.
-   So --animate-marquee makes `animate-marquee` work.
-   ============================================================ */
-
-@keyframes marquee {
-  /* 'from' defaults to the elements current position */
-  to {
-    transform: translateX(-50%);
-  }
-}
-
-/* ============================================================
-   The halftone grain layer.
-   ============================================================ */
-
+/* grain sits behind everything at z 0, content is z 10
+   put this on top and it blends with the text and wrecks legibility */
 body::before {
   content: "";
   position: fixed;
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  /* tiny dot tiled every 4px */
-  background-image: radial-gradient(
-    circle,
-    var(--grain-dot) 0.8px,
-    transparent 0.8px
-  );
+  background-image: radial-gradient(circle, var(--grain-dot) 0.8px, transparent 0.8px);
   background-size: 4px 4px;
   opacity: var(--grain-opacity);
 }
 
-/* ============================================================
-   Respect the OS "reduce motion" setting.
-   ============================================================ */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
-}
-
-/* ============================================================
-   MISREGISTERED INK
-   ============================================================
-   Technique: each word gets TWO pseudo-elements that duplicate
-   its text, one pink and one blue, offset in opposite
-   directions and sitting BEHIND the real black text. (CSS generated content is invisible to screen readers and search engines, so its better than 3 spans.
-   ============================================================ */
+/* ---------- misregistered ink ---------- */
 
 .ink-offset {
-  position: relative; /* the pseudo elements position against this */
-  display: inline-block; /* inline can't be a positioning reference reliably */
-
-  /* CRITICAL LINE.
-     The pseudo elements below use z-index: -1 to sit behind the
-     text.*/
+  position: relative;
+  display: inline-block;
+  /* without isolate the z-index -1 layers fall behind the page background
+     and vanish completely */
   isolation: isolate;
 }
 
 .ink-offset::before,
 .ink-offset::after {
-  /* attr() reads an HTML attribute and uses it as generated content.
-     So <span data-ink=" ..."> makes both layers duplicate
-     that string. This is why the text has to be in an attribute as well as in the element - the two must be kept in sync. */
   content: attr(data-ink);
-
   position: absolute;
   left: 0;
   top: 0;
-  z-index: -1; /* behind the real text, inside the isolated context */
-  pointer-events: none; /* not selectable, not clickable */
+  z-index: -1;
+  pointer-events: none;
   transition: transform 0.55s cubic-bezier(0.34, 1.4, 0.5, 1);
 }
 
-/* Pink plate: shifted down and right */
 .ink-offset::before {
   color: var(--color-pink-raw);
   transform: translate(4px, 3px);
 }
 
-/* Blue plate: shifted up and left, so the two pull apart */
 .ink-offset::after {
   color: var(--color-blue-raw);
   transform: translate(-3px, -3px);
 }
 
-/* On hover, exaggerate the misalignment.*/
 .group\/hero:hover .ink-offset::before {
   transform: translate(11px, 8px);
 }
@@ -164,96 +126,69 @@ body::before {
   transform: translate(-9px, -7px);
 }
 
-html {
-  scroll-behavior: smooth;
-}
+/* ---------- screenshot plates ---------- */
 
-/* ============================================================
-   duotone plates
-   ============================================================
-   the trick: strip the screenshot to greyscale, then let it
-   blend into a solid ink background. multiply on light paper,
-   screen on dark.
-   ============================================================ */
-
+/* screenshots show in full colour now
+   greyscale plus a blend mode looked nice but made the ui unreadable
+   which defeats the point of showing screenshots at all */
 .plate {
   position: relative;
   overflow: hidden;
   background-color: var(--plate-bg);
-
-  /* same isolate trick as the ink offset. mix-blend-mode blends
-     against everything behind it in the current stacking context -
-     without this the image would blend with the page background
-     and the card border instead of just its own ink layer */
   isolation: isolate;
 }
 
 .plate img {
   width: 100%;
   height: 100%;
-
-  /* fills the box without squashing. object-position: top means
-     we crop from the bottom, since screenshots put the good stuff
-     up top */
   object-fit: cover;
   object-position: top center;
-
-
-  filter: var(--plate-filter); /* greyscale + contrast, themed */
-  mix-blend-mode: var(--plate-blend); /* multiply light / screen dark */
-
-  transition: transform 0.55s cubic-bezier(0.2, 0.9, 0.3, 1);
+  display: block;
+  filter: var(--plate-filter);
+  transition: transform 0.55s cubic-bezier(0.2, 0.9, 0.3, 1), filter 0.3s;
 }
 
-/* halftone over the image only. this one IS on top - no text
-   underneath it, and it's what sells the "printed" look */
+.group\/card:hover .plate img {
+  transform: scale(1.04);
+  filter: none;
+}
+
+/* faint halftone so it still reads as printed
+   low enough that the screenshot underneath stays sharp */
 .plate::after {
   content: "";
   position: absolute;
   inset: 0;
   z-index: 2;
   pointer-events: none;
-  background-image: radial-gradient(
-    circle,
-    rgba(0, 0, 0, 0.9) 0.7px,
-    transparent 0.7px
-  );
+  background-image: radial-gradient(circle, rgba(0, 0, 0, 0.9) 0.6px, transparent 0.6px);
   background-size: 3px 3px;
   opacity: var(--plate-dot-opacity);
   mix-blend-mode: multiply;
 }
 
+/* fallback pattern for projects with no screenshot yet */
 .plate--gen {
   background-color: var(--color-blue-raw);
 }
 
-/* two gradients stacked: diagonal stripes over a big off-centre
-   dot. comma-separated backgrounds layer first-on-top */
 .plate--gen::before {
   content: "";
   position: absolute;
   inset: 0;
   z-index: 1;
   background:
-    repeating-linear-gradient(
-      45deg,
-      var(--color-pink-raw) 0 11px,
-      transparent 11px 22px
-    ),
-    radial-gradient(
-      circle at 72% 28%,
-      var(--color-pink-raw) 0 30%,
-      transparent 30%
-    );
-  opacity: 0.9;
+    repeating-linear-gradient(45deg, var(--color-pink-raw) 0 11px, transparent 11px 22px),
+    radial-gradient(circle at 72% 28%, var(--color-pink-raw) 0 30%, transparent 30%);
+  opacity: 0.85;
 }
 
 .plate__label {
   position: absolute;
   inset: 0;
-  z-index: 3; /* above the pattern AND the halftone */
+  z-index: 3;
   display: grid;
-  place-items: center; /* centres both axes in one line */
+  place-items: center;
   padding: 12px;
   font-family: var(--font-syne);
   font-weight: 800;
@@ -262,4 +197,60 @@ html {
   line-height: 1.02;
   text-align: center;
   color: var(--color-onink-raw);
+}
+
+/* ---------- scroll reveal ---------- */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(16px);
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.5s ease var(--reveal-delay, 0s),
+    transform 0.55s cubic-bezier(0.2, 0.9, 0.3, 1) var(--reveal-delay, 0s);
+}
+
+/* ---------- keyframes ---------- */
+
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes modal-pop {
+  from {
+    opacity: 0;
+    transform: translateY(22px) scale(0.985);
+  }
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}
+
+/* ---------- a11y ---------- */
+
+:focus-visible {
+  outline: 3px solid var(--color-pink-raw);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
 }

@@ -1,42 +1,24 @@
-const LINES = ["Adam.", "Hello."];
+// keeping the lines as data so the visible text and the data-ink attribute
+// cant drift apart
+const LINES = ["Adam Mokdad", "builds things."];
 
 export function Hero() {
   return (
-    <section className="group/hero mb-11.5">
-      <h1
-        className={[
-          "font-display font-extrabold uppercase",
-          "text-[clamp(40px,8.2vw,94px)]",
-          "leading-[0.9]",
-          "tracking-[0.035em]",
-          "mb-6",
-        ].join(" ")}
-      >
+    <section className="group/hero mb-[46px]">
+      <h1 className="font-display mb-6 text-[clamp(40px,8.2vw,94px)] leading-[0.9] font-extrabold tracking-[-0.035em] uppercase">
         {LINES.map((line, i) => (
-          // Fragment shorthand <>...</> groups siblings without adding
-          // a wrapper element to the DOM. It needs the `key`, so we use
-          // the long form <Fragment key=> ... except here we can just
-          // put the key on the span and handle the <br> separately.
           <span key={line}>
-            <span
-              className="ink-offset"
-              // Same string in two places: as content, and as the
-              // attribute the pseudo-elements read.
-              data-ink={line}
-            >
+            <span className="ink-offset" data-ink={line}>
               {line}
             </span>
-            {/* Only break between lines, not after the last one */}
             {i < LINES.length - 1 && <br />}
           </span>
         ))}
       </h1>
-      <p className="text-body max-w-130 text-base leading-[1.68]">
-        Full-stack developer and game dev in Toronto. Blah blah blah. I like to
-        code. I like video games. Blah blah blah blah. Lorem ipsum, dolor sit
-        amet consectetur adipisicing elit. Repellendus atque omnis dolore
-        eveniet accusamus. Nesciunt iste quisquam explicabo recusandae optio! Ea
-        tenetur neque molestiae libero, ducimus incidunt explicabo rem fugiat!
+
+      <p className="text-body max-w-[520px] text-base leading-[1.68]">
+        Full-stack web apps and Unity games, out of Toronto. Currently looking
+        for a team to build them with.
       </p>
     </section>
   );

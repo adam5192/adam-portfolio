@@ -1,20 +1,18 @@
-// this component helps smooth the transition when switching between themes
-
+// runs synchronously in head before the browser paints anything
+// without this you get a white flash before dark mode kicks in
 export function ThemeScript() {
   const script = `
     (function() {
       try {
         var stored = localStorage.getItem('theme');
-        // matchMedia asks the OS what the users system preference is.
-        // .matches is a boolean.
         var systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        // explicit choice wins; otherwise fall back to the OS setting.
         var theme = stored || (systemDark ? 'dark' : 'light');
         document.documentElement.setAttribute('data-theme', theme);
-      } catch (e) {
-        // localStorage throws in private mode / if cookies are blocked.
-      }
+      } catch (e) {}
     })();
   `;
+
+  // react escapes strings by default so you have to opt out to inject raw html
+  // safe here because we wrote the string, never put user input in it
   return <script dangerouslySetInnerHTML={{ __html: script }} />;
 }
