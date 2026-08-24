@@ -27,11 +27,11 @@ const SITE_URL = "https://adammokdad.com";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: "Adam Mokdad — Full-stack developer",
+  title: "Adam Mokdad | Full-stack developer",
   description:
     "Full-stack developer and game dev in Toronto. Next.js, TypeScript, PostgreSQL, Unity.",
   openGraph: {
-    title: "Adam Mokdad — Full-stack developer",
+    title: "Adam Mokdad | Full-stack developer",
     description:
       "Full-stack developer and game dev in Toronto. Next.js, TypeScript, PostgreSQL, Unity.",
     url: SITE_URL,
@@ -41,7 +41,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Adam Mokdad — Full-stack developer",
+    title: "Adam Mokdad | Full-stack developer",
     description: "Full-stack developer and game dev in Toronto.",
   },
 };

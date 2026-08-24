@@ -55,7 +55,7 @@ export const PROJECTS: readonly Project[] = [
     slug: "deepseeker",
     title: "DeepSeeker",
     kind: "Game",
-    year: "2024",
+    year: "2025",
     featured: true,
     summary:
       "A 2D survival crafting game with diving and mining mechanics, built in Unity. I handled core gameplay, UI design, and animation integration.",
@@ -72,7 +72,7 @@ export const PROJECTS: readonly Project[] = [
     slug: "tripdrop",
     title: "TripDrop",
     kind: "Web app",
-    year: "2025",
+    year: "2026",
     summary:
       "Plan trips, log activities with ratings and categories, and watch it all land as pins on an interactive map.",
     description:
@@ -104,7 +104,7 @@ export const PROJECTS: readonly Project[] = [
     slug: "spellstorm-academy",
     title: "Spellstorm Academy",
     kind: "Game",
-    year: "2024",
+    year: "2025",
     summary:
       "A Unity game designed, programmed, and shipped entirely solo, from core mechanics to final build.",
     description:
