@@ -4,7 +4,7 @@ export function SiteFooter() {
       <span>
         © {new Date().getFullYear()} Adam Mokdad ·{" "}
         <a
-          href="mailto:hello@adammokdad.com"
+          href="mailto:adammokdad2003@gmail.com"
           className="hover:text-pink transition-colors"
         >
           adammokdad2003@gmail.com
